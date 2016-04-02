@@ -19,10 +19,12 @@ public class ThingCursorWrapper extends CursorWrapper {
     public Thing getThing() {
         String uuidString = getString(getColumnIndex(ThingTable.Cols.UUID));
         String what = getString(getColumnIndex(ThingTable.Cols.WHAT));
+        String barcode = getString(getColumnIndex(ThingTable.Cols.BARCODE));
         String where = getString(getColumnIndex(ThingTable.Cols.WHERE));
 
         Thing thing = new Thing(UUID.fromString(uuidString));
         thing.setWhat(what);
+        thing.setBarcode(barcode);
         thing.setWhere(where);
 
         return thing;

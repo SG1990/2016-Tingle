@@ -10,6 +10,7 @@ public class ThingDbSchema {
         public static final class Cols {
             public static final String UUID = "uuid";
             public static final String WHAT = "what";
+            public static final String BARCODE = "barcode";
             public static final String WHERE = "whereabouts";
         }
     }

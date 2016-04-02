@@ -6,4 +6,6 @@
     <string name="add_button">Add new thing</string>
     <string name="what_thing">What thing?</string>
     <string name="where">Where?</string>
+    <string name="scan_button">Scan Thing</string>
+    <string name="barcode">Barcode</string>
 </resources>

@@ -6,6 +6,7 @@ public class Thing {
 
     private UUID mId;
     private String mWhat;
+    private String mBarcode;
     private String mWhere;
 
     public Thing() {
@@ -31,6 +32,14 @@ public class Thing {
 
     public String getWhere() { return mWhere; }
     public void setWhere(String where) { mWhere = where; }
+
+    public String getBarcode() {
+        return mBarcode;
+    }
+
+    public void setBarcode(String barcode) {
+        mBarcode = barcode;
+    }
 
     public String oneLine(String pre, String post) {
         return pre + mWhat + " " + post + mWhere;

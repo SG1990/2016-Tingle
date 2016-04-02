@@ -62,6 +62,7 @@ public class ListFragment extends Fragment {
     private class ThingHolder extends RecyclerView.ViewHolder implements
             View.OnClickListener {
         private TextView mNameTextView;
+        private TextView mBarcodeTextView;
         private TextView mWhereTextView;
         private Thing mThing;
 
@@ -71,6 +72,8 @@ public class ListFragment extends Fragment {
 
             mNameTextView = (TextView)
                     itemView.findViewById(R.id.list_item_what_textview);
+            mBarcodeTextView = (TextView)
+                    itemView.findViewById(R.id.list_item_barcode_textview);
             mWhereTextView = (TextView)
                     itemView.findViewById(R.id.list_item_where_textview);
         }
@@ -78,6 +81,7 @@ public class ListFragment extends Fragment {
         private void bindThing(Thing thing) {
             mThing = thing;
             mNameTextView.setText(thing.getWhat());
+            mBarcodeTextView.setText(thing.getBarcode());
             mWhereTextView.setText(thing.getWhere());
         }
 

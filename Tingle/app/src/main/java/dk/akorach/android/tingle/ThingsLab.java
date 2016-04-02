@@ -107,6 +107,7 @@ public class ThingsLab {
         ContentValues values = new ContentValues();
         values.put(ThingTable.Cols.UUID, thing.getId().toString());
         values.put(ThingTable.Cols.WHAT, thing.getWhat());
+        values.put(ThingTable.Cols.BARCODE, thing.getBarcode());
         values.put(ThingTable.Cols.WHERE, thing.getWhere());
 
         return values;
