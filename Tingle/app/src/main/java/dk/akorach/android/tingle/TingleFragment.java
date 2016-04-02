@@ -1,8 +1,11 @@
 package dk.akorach.android.tingle;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -116,9 +119,16 @@ public class TingleFragment extends Fragment {
             String format = data.getStringExtra("SCAN_RESULT_FORMAT");
             mNewBarcode.setText(contents);
 
-            // get name from the net and set what
-            //new FetchNameTask().execute(contents);
-
+            // check connection and get name
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                new FetchNameTask().execute(contents);
+            } else {
+                Toast.makeText(getActivity(), "No network connection available.",
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -144,7 +154,8 @@ public class TingleFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String name) {
-            mNewWhat.setText(name);
+            if (!name.equals("null"))
+                mNewWhat.setText(name);
         }
     }
 }

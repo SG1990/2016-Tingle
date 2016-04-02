@@ -21,12 +21,13 @@ public class BarcodeFetcher {
     private static final String API_KEY = "b7b2f1af1add9ae8b9790c89c8158a67";
 
     public byte[] getUrlBytes(String urlSpec) throws IOException {
+        InputStream in = null;
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            InputStream in = connection.getInputStream();
+            in = connection.getInputStream();
 
             if(connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 throw new IOException(connection.getResponseMessage() +
@@ -44,6 +45,8 @@ public class BarcodeFetcher {
             return out.toByteArray();
 
         } finally {
+            if(in != null)
+                in.close();
             connection.disconnect();
         }
     }
