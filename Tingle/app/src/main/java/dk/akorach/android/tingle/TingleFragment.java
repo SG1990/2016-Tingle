@@ -3,12 +3,14 @@ package dk.akorach.android.tingle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
@@ -23,8 +25,17 @@ import android.widget.Toast;
  * Created by SG on 19.02.2016.
  */
 public class TingleFragment extends Fragment {
-
     private static final int REQUEST_BARCODE = 0;
+
+    // Whether there is a Wi-Fi connection.
+    private static boolean wifiConnected = false;
+    // Whether there is a mobile connection.
+    private static boolean mobileConnected = false;
+    // Whether the display should be refreshed.
+    public static boolean refreshDisplay = true;
+
+    // The user's current network preference setting.
+    public static String sPref = null;
 
     //GUI variables
     private Button mListThings;
@@ -107,6 +118,38 @@ public class TingleFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Gets the user's network preference settings
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        // Retrieves a string value for the preferences. The second parameter
+        // is the default value to use if a preference value is not found.
+        String key = getString(R.string.pref_download_key);
+        String def = getString(R.string.pref_download_any_network);
+        sPref = sharedPrefs.getString(key, def);
+
+        updateConnectedFlags();
+    }
+
+    // Checks the network connection and sets the wifiConnected and mobileConnected
+    // variables accordingly.
+    private void updateConnectedFlags() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        if (activeInfo != null && activeInfo.isConnected()) {
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+            mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+        } else {
+            wifiConnected = false;
+            mobileConnected = false;
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             if (requestCode == REQUEST_BARCODE) {
@@ -122,16 +165,17 @@ public class TingleFragment extends Fragment {
             String format = data.getStringExtra("SCAN_RESULT_FORMAT");
             mNewBarcode.setText(contents);
 
-            // check connection and get name
-            ConnectivityManager connMgr = (ConnectivityManager)
-                    getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.isConnected()) {
+            String any = getString(R.string.pref_download_any_network);
+            String wifi = getString(R.string.pref_download_wifi_only);
+            if (((sPref.equals(any)) && (wifiConnected || mobileConnected))
+                    || ((sPref.equals(wifi)) && (wifiConnected))) {
                 new FetchNameTask().execute(contents);
             } else {
-                Toast.makeText(getActivity(), "No network connection available.",
+                Toast.makeText(getActivity(), "Preferred connection unavailable."
+                        + " Preferred connection: " + sPref + ".",
                         Toast.LENGTH_SHORT).show();
             }
+
         }
     }
 
