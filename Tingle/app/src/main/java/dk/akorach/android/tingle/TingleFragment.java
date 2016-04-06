@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -32,6 +33,8 @@ public class TingleFragment extends Fragment {
     private TextView mLastAdded;
     private TextView mNewWhat, mNewWhere, mNewBarcode;
 
+    public interface ToActivity { void stateChange(); }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +49,6 @@ public class TingleFragment extends Fragment {
         mLastAdded = (TextView) v.findViewById(R.id.last_thing);
         mScanThing = (Button) v.findViewById(R.id.scan_button);
         mAddThing = (Button) v.findViewById(R.id.add_button);
-        mListThings = (Button) v.findViewById(R.id.list_button);
         mNewWhat = (TextView) v.findViewById(R.id.what_text);
         mNewBarcode = (TextView) v.findViewById(R.id.barcode_text);
         mNewWhere = (TextView) v.findViewById(R.id.where_text);
@@ -76,23 +78,24 @@ public class TingleFragment extends Fragment {
                     mNewBarcode.setText("");
                     mNewWhere.setText("");
                     updateUI();
+
+                    ((ToActivity) getActivity()).stateChange();
                 }
             }
         });
 
-        mListThings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), ListActivity.class);
-                startActivity(i);
+        mListThings = (Button) v.findViewById(R.id.list_button);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mListThings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getActivity(), ListActivity.class);
+                    startActivity(i);
 
-            }
-        });
-
-        if(getActivity().findViewById(R.id.fragment_container) == null) { //vertical
+                }
+            });
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mListThings.setVisibility(View.GONE);
-        } else {
-            mListThings.setVisibility(View.VISIBLE);
         }
 
         PackageManager packageManager = getActivity().getPackageManager();
@@ -135,14 +138,6 @@ public class TingleFragment extends Fragment {
     private void updateUI(){
         mLastAdded.setText(
                 ThingsLab.getInstance(getContext()).getLastThing().toString());
-
-        if(getActivity().findViewById(R.id.fragment_container) == null) {       //if horizontal
-            FragmentManager fm = getFragmentManager();
-            ListFragment listFragment = (ListFragment) fm.findFragmentById(R.id.list_fragment);
-            if (listFragment != null) {
-                listFragment.refreshList();
-            }
-        }
     }
 
     private class FetchNameTask extends AsyncTask<String,Void,String> {

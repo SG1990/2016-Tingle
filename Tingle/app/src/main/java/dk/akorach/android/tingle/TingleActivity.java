@@ -1,12 +1,20 @@
 package dk.akorach.android.tingle;
 
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
 
-public class TingleActivity extends FragmentActivity {
+public class TingleActivity extends FragmentActivity implements TingleFragment.ToActivity {
+
+    Fragment tingleFragmentLandscape, listFragmentLandscape;
+
+    @Override
+    public void stateChange() {
+        if ((listFragmentLandscape != null)) ((ListFragment) listFragmentLandscape).refreshList();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,11 +24,7 @@ public class TingleActivity extends FragmentActivity {
 
         FragmentManager fm = getSupportFragmentManager();
 
-        if(findViewById(R.id.fragment_container) != null) { // vertical mode
-            if (savedInstanceState != null) {
-                return;
-            }
-
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) { // vertical mode
             Fragment tingleFragment = fm.findFragmentById(R.id.fragment_container);
             if(tingleFragment == null) {
                 tingleFragment = new TingleFragment();
@@ -29,27 +33,17 @@ public class TingleActivity extends FragmentActivity {
                         .commit();
             }
         } else {                                            // horizontal mode
+            tingleFragmentLandscape = fm.findFragmentById(R.id.tingle_fragment);
+            listFragmentLandscape = fm.findFragmentById(R.id.list_fragment);
 
-            if (savedInstanceState != null) {
-                return;
-            }
-
-            Fragment tingleFragment = fm.findFragmentById(R.id.tingle_fragment);
-            if(tingleFragment == null) {
-                tingleFragment = new TingleFragment();
+            if((tingleFragmentLandscape == null) && (listFragmentLandscape == null) ) {
+                tingleFragmentLandscape = new TingleFragment();
+                listFragmentLandscape = new ListFragment();
                 fm.beginTransaction()
-                        .add(R.id.tingle_fragment, tingleFragment)
-                        .commit();
-            }
-
-            Fragment listFragment = fm.findFragmentById(R.id.list_fragment);
-            if(listFragment == null) {
-                listFragment = new ListFragment();
-                fm.beginTransaction()
-                        .add(R.id.list_fragment, listFragment)
+                        .add(R.id.tingle_fragment, tingleFragmentLandscape)
+                        .add(R.id.list_fragment, listFragmentLandscape)
                         .commit();
             }
         }
-
     }
 }
