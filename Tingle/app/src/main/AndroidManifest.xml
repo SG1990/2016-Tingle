@@ -20,6 +20,10 @@
         </activity>
         <activity android:name=".ListActivity">
         </activity>
+        <activity
+            android:name=".TinglePreferenceActivity"
+            android:label="Settings">
+        </activity>
     </application>
 
 </manifest>
