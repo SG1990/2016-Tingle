@@ -12,8 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +29,6 @@ public class TingleFragment extends Fragment {
     private static boolean wifiConnected = false;
     // Whether there is a mobile connection.
     private static boolean mobileConnected = false;
-    // Whether the display should be refreshed.
-    public static boolean refreshDisplay = true;
-
     // The user's current network preference setting.
     public static String sPref = null;
 
@@ -167,6 +162,7 @@ public class TingleFragment extends Fragment {
 
             String any = getString(R.string.pref_download_any_network);
             String wifi = getString(R.string.pref_download_wifi_only);
+            updateConnectedFlags();
             if (((sPref.equals(any)) && (wifiConnected || mobileConnected))
                     || ((sPref.equals(wifi)) && (wifiConnected))) {
                 new FetchNameTask().execute(contents);
@@ -175,7 +171,6 @@ public class TingleFragment extends Fragment {
                         + " Preferred connection: " + sPref + ".",
                         Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
