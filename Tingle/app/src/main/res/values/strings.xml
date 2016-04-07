@@ -23,7 +23,7 @@
     <string name="pref_download_any_network">any</string>
 
     <!-- Tingle Fragment strings -->
-    <string name="headline">Last thing added:</string>
+    <string name="recently_added">Recently added:</string>
     <string name="list_button">List of all things</string>
     <string name="add_button">Add new thing</string>
     <string name="what_thing">What thing?</string>
