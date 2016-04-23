@@ -21,11 +21,13 @@ public class ThingCursorWrapper extends CursorWrapper {
         String what = getString(getColumnIndex(ThingTable.Cols.WHAT));
         String barcode = getString(getColumnIndex(ThingTable.Cols.BARCODE));
         String where = getString(getColumnIndex(ThingTable.Cols.WHERE));
+        String filename = getString(getColumnIndex(ThingTable.Cols.FILENAME));
 
         Thing thing = new Thing(UUID.fromString(uuidString));
         thing.setWhat(what);
         thing.setBarcode(barcode);
         thing.setWhere(where);
+        thing.setFilename(filename);
 
         return thing;
     }

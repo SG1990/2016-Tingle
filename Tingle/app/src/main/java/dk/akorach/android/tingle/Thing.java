@@ -8,6 +8,7 @@ public class Thing {
     private String mWhat;
     private String mBarcode;
     private String mWhere;
+    private String mFilename;
 
     public Thing() {
         this(UUID.randomUUID());
@@ -15,12 +16,6 @@ public class Thing {
 
     public Thing(UUID id) {
         mId = id;
-    }
-
-    public Thing(String what, String where) {
-        mId = UUID.randomUUID();
-        mWhat = what;
-        mWhere = where;
     }
 
     public UUID getId() {
@@ -39,6 +34,14 @@ public class Thing {
 
     public void setBarcode(String barcode) {
         mBarcode = barcode;
+    }
+
+    public String getFilename() {
+        return mFilename;
+    }
+
+    public void setFilename(String filename) {
+        mFilename = filename;
     }
 
     public String oneLine(String pre, String post) {

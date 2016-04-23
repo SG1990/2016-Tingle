@@ -24,7 +24,8 @@ public class ThingBaseHelper extends SQLiteOpenHelper {
                         ThingTable.Cols.UUID + ", " +
                         ThingTable.Cols.WHAT + ", " +
                         ThingTable.Cols.BARCODE + ", " +
-                        ThingTable.Cols.WHERE +
+                        ThingTable.Cols.WHERE + ", " +
+                        ThingTable.Cols.FILENAME +
                         ")"
         );
     }

@@ -6,24 +6,41 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by SG on 19.02.2016.
  */
 public class TingleFragment extends Fragment {
+    private static final String TAG = "TingleFragment";
+
+    private static final String KEY_PHOTO_FILENAME = "photoFilename";
+
     private static final int REQUEST_BARCODE = 0;
+    private static final int REQUEST_PHOTO = 1;
 
     // Whether there is a Wi-Fi connection.
     private static boolean wifiConnected = false;
@@ -32,10 +49,14 @@ public class TingleFragment extends Fragment {
     // The user's current network preference setting.
     public static String sPref = null;
 
+    private String mPhotoFilename;
+
     //GUI variables
     private Button mListThings;
     private Button mScanThing;
     private Button mAddThing;
+    private ImageButton mPhotoButton;
+    private ImageView mPhotoView;
     private TextView mLastAdded;
     private TextView mNewWhat, mNewWhere, mNewBarcode;
 
@@ -44,6 +65,20 @@ public class TingleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null)
+            mPhotoFilename = savedInstanceState.getString(KEY_PHOTO_FILENAME, "");
+
+        if(mPhotoFilename == null || mPhotoFilename.isEmpty())
+            mPhotoFilename = ThingsLab.getInstance(getActivity()).getNewFileName();
+
+        Log.i(TAG, "Photo filename: " + mPhotoFilename);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putString(KEY_PHOTO_FILENAME, mPhotoFilename);
     }
 
     @Override
@@ -78,12 +113,23 @@ public class TingleFragment extends Fragment {
                     thing.setWhat(mNewWhat.getText().toString().trim());
                     thing.setBarcode(mNewBarcode.getText().toString().trim());
                     thing.setWhere(mNewWhere.getText().toString().trim());
+                    File file = getNewFileLocation(mPhotoFilename);
+                    if(file != null && file.exists()) {
+                        thing.setFilename(mPhotoFilename);
+
+                    } else {
+                        Log.i(TAG, "File is null or does not exist");
+                    }
+
                     ThingsLab.getInstance(getContext()).addThing(thing);
 
                     mNewWhat.setText("");
                     mNewBarcode.setText("");
                     mNewWhere.setText("");
                     updateUI();
+
+                    mPhotoFilename = ThingsLab.getInstance(getActivity()).getNewFileName();
+                    Log.i(TAG, "Photo filename: " + mPhotoFilename);
 
                     ((ToActivity) getActivity()).stateChange();
                 }
@@ -109,6 +155,25 @@ public class TingleFragment extends Fragment {
                 PackageManager.MATCH_DEFAULT_ONLY) == null) {
             mScanThing.setEnabled(false);
         }
+
+        mPhotoButton = (ImageButton) v.findViewById(R.id.tingle_camera);
+        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        boolean canTakePhoto = captureImage.resolveActivity(packageManager) != null;
+        mPhotoButton.setEnabled(canTakePhoto);
+
+        mPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = getNewFileLocation(mPhotoFilename);
+                Log.i(TAG, "Photo filename: " + mPhotoFilename);
+                Uri uri = Uri.fromFile(file);
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                startActivityForResult(captureImage, REQUEST_PHOTO);
+            }
+        });
+
+        mPhotoView = (ImageView) v.findViewById(R.id.thing_photo);
 
         return v;
     }
@@ -175,8 +240,35 @@ public class TingleFragment extends Fragment {
     }
 
     private void updateUI(){
+        Thing lastThing = ThingsLab.getInstance(getContext()).getLastThing();
         mLastAdded.setText(
-                ThingsLab.getInstance(getContext()).getLastThing().toString());
+                lastThing.toString());
+
+        updatePhotoView(lastThing);
+    }
+
+    private void updatePhotoView(Thing thing) {
+        File file = ThingsLab.getInstance(getActivity()).getPhotoFile(thing);
+        if(file == null || !file.exists()) {
+            mPhotoView.setImageDrawable(null);
+            Log.i(TAG, "No photo to set :<");
+            Log.i(TAG, "Last Thing filename: " + thing.getFilename());
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    file.getPath(), getActivity());
+            mPhotoView.setImageBitmap(bitmap);
+        }
+    }
+
+    private File getNewFileLocation(String filename) {
+        File externalFilesDir = getActivity()
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if(externalFilesDir == null) {
+            return null;
+        }
+
+        return new File(externalFilesDir, filename);
     }
 
     private class FetchNameTask extends AsyncTask<String,Void,String> {

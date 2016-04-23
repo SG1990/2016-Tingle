@@ -4,7 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -88,6 +92,10 @@ public class ThingsLab {
     public void deleteThing(Thing t) {
         String uuidString = t.getId().toString();
 
+        File file = getPhotoFile(t);
+        if(file != null && file.exists())
+            file.delete();
+
         mDatabase.delete(ThingTable.NAME,
                 ThingTable.Cols.UUID + "= ?",
                 new String[]{uuidString});
@@ -99,8 +107,32 @@ public class ThingsLab {
 
         mDatabase.update(ThingTable.NAME, values,
                 ThingTable.Cols.UUID + "= ?",
-                new String[] {uuidString});
+                new String[]{uuidString});
 
+    }
+
+    public File getPhotoFile(Thing thing) {
+        if(thing.getFilename() == null || thing.getFilename().isEmpty()){
+            return null;
+        }
+
+        File externalFilesDir = mContext
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if(externalFilesDir == null) {
+            return null;
+        }
+
+        return new File(externalFilesDir, thing.getFilename());
+    }
+
+    public String getNewFileName() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        java.util.Date date = new java.util.Date();
+        String datetime = dateFormat.format(date);
+        String filename = "THING_" + datetime;
+
+        return filename;
     }
 
     private static ContentValues getContentValues (Thing thing) {
@@ -109,6 +141,7 @@ public class ThingsLab {
         values.put(ThingTable.Cols.WHAT, thing.getWhat());
         values.put(ThingTable.Cols.BARCODE, thing.getBarcode());
         values.put(ThingTable.Cols.WHERE, thing.getWhere());
+        values.put(ThingTable.Cols.FILENAME, thing.getFilename());
 
         return values;
     }
@@ -126,5 +159,4 @@ public class ThingsLab {
 
         return new ThingCursorWrapper(cursor);
     }
-
 }

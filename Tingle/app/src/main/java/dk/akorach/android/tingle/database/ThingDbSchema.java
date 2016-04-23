@@ -12,6 +12,7 @@ public class ThingDbSchema {
             public static final String WHAT = "what";
             public static final String BARCODE = "barcode";
             public static final String WHERE = "whereabouts";
+            public static final String FILENAME = "filename";
         }
     }
 }
