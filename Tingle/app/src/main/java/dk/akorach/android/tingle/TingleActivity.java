@@ -112,10 +112,12 @@ public class TingleActivity extends AppCompatActivity implements TingleFragment.
                 tingleFragment.scanBarcode();
                 return true;
             case R.id.menu_item_list:
-                Intent i = new Intent(this, ListActivity.class);
-                startActivity(i);
+                Intent il = new Intent(this, ListActivity.class);
+                startActivity(il);
                 return true;
             case R.id.menu_item_search:
+                Intent is = new Intent(this, SearchActivity.class);
+                startActivity(is);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
