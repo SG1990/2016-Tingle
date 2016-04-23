@@ -1,6 +1,7 @@
 package dk.akorach.android.tingle;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -70,7 +71,7 @@ public class TingleActivity extends AppCompatActivity implements TingleFragment.
             listItem.setVisible(false);
         }
 
-        Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         boolean canTakePhoto = captureImage.resolveActivity(getPackageManager()) != null;
 
         MenuItem photoItem = menu.findItem(R.id.menu_item_photo);
@@ -80,11 +81,24 @@ public class TingleActivity extends AppCompatActivity implements TingleFragment.
             photoItem.setVisible(false);
         }
 
+        final Intent scan = new Intent("com.google.zxing.client.android.SCAN");
+        PackageManager pm = this.getPackageManager();
+        MenuItem scanItem = menu.findItem(R.id.menu_item_photo);
+        if(pm.resolveActivity(scan, PackageManager.MATCH_DEFAULT_ONLY) == null) {
+            scanItem.setVisible(false);
+        } else {
+            scanItem.setVisible(true);
+        }
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager fm = getSupportFragmentManager();
+        TingleFragment tingleFragment =
+                (TingleFragment) fm.findFragmentById(R.id.tingle_fragment);
+
         switch(item.getItemId()) {
             case R.id.menu_item_settings:
                 Intent intent = new Intent();
@@ -92,8 +106,10 @@ public class TingleActivity extends AppCompatActivity implements TingleFragment.
                 startActivity(intent);
                 return true;
             case R.id.menu_item_photo:
+                tingleFragment.takePhoto();
                 return true;
             case R.id.menu_item_scan:
+                tingleFragment.scanBarcode();
                 return true;
             case R.id.menu_item_list:
                 Intent i = new Intent(this, ListActivity.class);

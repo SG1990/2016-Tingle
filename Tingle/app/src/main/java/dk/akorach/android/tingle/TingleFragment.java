@@ -52,10 +52,7 @@ public class TingleFragment extends Fragment {
     private String mPhotoFilename;
 
     //GUI variables
-//    private Button mListThings;
-    private Button mScanThing;
     private Button mAddThing;
-    private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private TextView mLastAdded;
     private TextView mNewWhat, mNewWhere, mNewBarcode;
@@ -88,21 +85,10 @@ public class TingleFragment extends Fragment {
 
         //Accessing the GUI elements
         mLastAdded = (TextView) v.findViewById(R.id.last_thing);
-        mScanThing = (Button) v.findViewById(R.id.scan_button);
         mAddThing = (Button) v.findViewById(R.id.add_button);
         mNewWhat = (TextView) v.findViewById(R.id.what_text);
         mNewBarcode = (TextView) v.findViewById(R.id.barcode_text);
         mNewWhere = (TextView) v.findViewById(R.id.where_text);
-
-
-        final Intent scan = new Intent("com.google.zxing.client.android.SCAN");
-        mScanThing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scan.putExtra("SCAN_MODE", "PRODUCT_MODE");
-                startActivityForResult(scan, REQUEST_BARCODE);
-            }
-        });
 
         //View products click event
         mAddThing.setOnClickListener(new View.OnClickListener() {
@@ -133,42 +119,6 @@ public class TingleFragment extends Fragment {
 
                     ((ToActivity) getActivity()).stateChange();
                 }
-            }
-        });
-
-//        mListThings = (Button) v.findViewById(R.id.list_button);
-//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            mListThings.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent i = new Intent(getActivity(), ListActivity.class);
-//                    startActivity(i);
-//                }
-//            });
-//        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            mListThings.setVisibility(View.GONE);
-//        }
-
-        PackageManager packageManager = getActivity().getPackageManager();
-        if(packageManager.resolveActivity(scan,
-                PackageManager.MATCH_DEFAULT_ONLY) == null) {
-            mScanThing.setEnabled(false);
-        }
-
-        mPhotoButton = (ImageButton) v.findViewById(R.id.tingle_camera);
-        final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        boolean canTakePhoto = captureImage.resolveActivity(packageManager) != null;
-        mPhotoButton.setEnabled(canTakePhoto);
-
-        mPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                File file = getNewFileLocation(mPhotoFilename);
-                Log.i(TAG, "Photo filename: " + mPhotoFilename);
-                Uri uri = Uri.fromFile(file);
-                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(captureImage, REQUEST_PHOTO);
             }
         });
 
@@ -212,7 +162,11 @@ public class TingleFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
             if (requestCode == REQUEST_BARCODE) {
-                Toast toast = Toast.makeText(getActivity(), "Scan was Cancelled!",
+                Toast toast = Toast.makeText(getActivity(), "Scan was cancelled!",
+                        Toast.LENGTH_LONG);
+                toast.show();
+            } else if(requestCode == REQUEST_PHOTO) {
+                Toast toast = Toast.makeText(getActivity(), "Photo was not taken!",
                         Toast.LENGTH_LONG);
                 toast.show();
             }
@@ -235,7 +189,26 @@ public class TingleFragment extends Fragment {
                         + " Preferred connection: " + sPref + ".",
                         Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == REQUEST_PHOTO) {
+            Toast toast = Toast.makeText(getActivity(), "Photo taken!",
+                    Toast.LENGTH_LONG);
+            toast.show();
         }
+    }
+
+    public void takePhoto() {
+        File file = getNewFileLocation(mPhotoFilename);
+        Uri uri = Uri.fromFile(file);
+
+        Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(captureImage, REQUEST_PHOTO);
+    }
+
+    public void scanBarcode() {
+        Intent scan = new Intent("com.google.zxing.client.android.SCAN");
+        scan.putExtra("SCAN_MODE", "PRODUCT_MODE");
+        startActivityForResult(scan, REQUEST_BARCODE);
     }
 
     private void updateUI(){
@@ -250,8 +223,6 @@ public class TingleFragment extends Fragment {
         File file = ThingsLab.getInstance(getActivity()).getPhotoFile(thing);
         if(file == null || !file.exists()) {
             mPhotoView.setImageDrawable(null);
-            Log.i(TAG, "No photo to set :<");
-            Log.i(TAG, "Last Thing filename: " + thing.getFilename());
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     file.getPath(), getActivity());
