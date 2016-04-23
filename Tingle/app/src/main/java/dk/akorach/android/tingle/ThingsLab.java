@@ -83,6 +83,32 @@ public class ThingsLab {
         }
     }
 
+    public List<Thing> findThingsByName(String like){
+        if(like == null || like.isEmpty()) return null;
+
+        List<Thing> matches = new ArrayList<>();
+        like = "%" + like + "%";
+
+        ThingCursorWrapper cursor = queryCrimes(
+                ThingTable.Cols.WHAT + " like ?",
+                new String[] { like }
+        );
+
+        try {
+            if(cursor.getCount() == 0) return null;
+
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                matches.add(cursor.getThing());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return matches;
+    }
+
     public void addThing(Thing thing) {
         ContentValues values = getContentValues(thing);
 

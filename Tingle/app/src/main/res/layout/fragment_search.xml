@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/tingle_logo"
+        android:paddingBottom="16dp"/>
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_field"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:inputType="textCapWords"
+        android:layout_marginLeft="50dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:paddingTop="50dp"
+        android:layout_gravity="bottom">
+
+        <ImageView
+            android:id="@+id/thing_photo_search"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:scaleType="centerInside"
+            android:background="@android:color/darker_gray"
+            android:cropToPadding="true"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/thing_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                tools:text="Thing's Name"/>
+
+            <TextView
+                android:id="@+id/thing_placement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                tools:text="Thing's placement"/>
+
+            <TextView
+                android:id="@+id/thing_barcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                tools:text="09898787676574"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
