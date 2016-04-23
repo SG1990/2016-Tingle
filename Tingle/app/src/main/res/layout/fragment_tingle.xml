@@ -105,13 +105,13 @@
         android:layout_marginLeft="16dp"
         android:src="@android:drawable/ic_menu_camera"/>
 
-    <Button
-        android:id="@+id/list_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:text="@string/list_button"/>
+    <!--<Button-->
+        <!--android:id="@+id/list_button"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:text="@string/list_button"/>-->
 
     <TextView
         android:layout_width="wrap_content"

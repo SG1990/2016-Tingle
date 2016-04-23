@@ -2,6 +2,7 @@ package dk.akorach.android.tingle;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -61,6 +62,24 @@ public class TingleActivity extends AppCompatActivity implements TingleFragment.
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_tingle_menu, menu);
+
+        MenuItem listItem = menu.findItem(R.id.menu_item_list);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            listItem.setVisible(true);
+        } else {
+            listItem.setVisible(false);
+        }
+
+        Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        boolean canTakePhoto = captureImage.resolveActivity(getPackageManager()) != null;
+
+        MenuItem photoItem = menu.findItem(R.id.menu_item_photo);
+        if(canTakePhoto) {
+            photoItem.setVisible(true);
+        } else {
+            photoItem.setVisible(false);
+        }
+
         return true;
     }
 
@@ -71,6 +90,16 @@ public class TingleActivity extends AppCompatActivity implements TingleFragment.
                 Intent intent = new Intent();
                 intent.setClassName(this, "dk.akorach.android.tingle.TinglePreferenceActivity");
                 startActivity(intent);
+                return true;
+            case R.id.menu_item_photo:
+                return true;
+            case R.id.menu_item_scan:
+                return true;
+            case R.id.menu_item_list:
+                Intent i = new Intent(this, ListActivity.class);
+                startActivity(i);
+                return true;
+            case R.id.menu_item_search:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -52,7 +52,7 @@ public class TingleFragment extends Fragment {
     private String mPhotoFilename;
 
     //GUI variables
-    private Button mListThings;
+//    private Button mListThings;
     private Button mScanThing;
     private Button mAddThing;
     private ImageButton mPhotoButton;
@@ -136,19 +136,18 @@ public class TingleFragment extends Fragment {
             }
         });
 
-        mListThings = (Button) v.findViewById(R.id.list_button);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mListThings.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(getActivity(), ListActivity.class);
-                    startActivity(i);
-
-                }
-            });
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mListThings.setVisibility(View.GONE);
-        }
+//        mListThings = (Button) v.findViewById(R.id.list_button);
+//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            mListThings.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent i = new Intent(getActivity(), ListActivity.class);
+//                    startActivity(i);
+//                }
+//            });
+//        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            mListThings.setVisibility(View.GONE);
+//        }
 
         PackageManager packageManager = getActivity().getPackageManager();
         if(packageManager.resolveActivity(scan,
