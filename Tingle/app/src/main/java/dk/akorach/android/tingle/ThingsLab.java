@@ -89,7 +89,7 @@ public class ThingsLab {
         List<Thing> matches = new ArrayList<>();
         like = "%" + like + "%";
 
-        ThingCursorWrapper cursor = queryCrimes(
+        ThingCursorWrapper cursor = queryCrimesOrdered(
                 ThingTable.Cols.WHAT + " like ?",
                 new String[] { like }
         );
@@ -181,6 +181,20 @@ public class ThingsLab {
                 null,
                 null,
                 null
+        );
+
+        return new ThingCursorWrapper(cursor);
+    }
+
+    private ThingCursorWrapper queryCrimesOrdered(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                ThingTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                ThingTable.Cols.WHAT + " ASC"
         );
 
         return new ThingCursorWrapper(cursor);
