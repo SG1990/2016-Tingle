@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by SG on 02.04.2016.
+ * Created by akor on 02.04.2016.
  */
 public class BarcodeFetcher {
 

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import dk.akorach.android.tingle.database.ThingDbSchema.ThingTable;
 
 /**
- * Created by SG on 11.03.2016.
+ * Created by akor on 11.03.2016.
  */
 public class ThingBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;

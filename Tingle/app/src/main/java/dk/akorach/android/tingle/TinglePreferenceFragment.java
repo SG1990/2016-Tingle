@@ -7,7 +7,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 /**
- * Created by SG on 06.04.2016.
+ * Created by akor on 06.04.2016.
  */
 public class TinglePreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceChangeListener{

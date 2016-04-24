@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by SG on 23.04.2016.
+ * Created by akor on 23.04.2016.
  */
 public class SearchActivity extends AppCompatActivity {
 

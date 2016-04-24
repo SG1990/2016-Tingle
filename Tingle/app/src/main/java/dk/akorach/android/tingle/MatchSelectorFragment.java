@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**

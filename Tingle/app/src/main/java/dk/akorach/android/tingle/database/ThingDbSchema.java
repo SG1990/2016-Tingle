@@ -1,7 +1,7 @@
 package dk.akorach.android.tingle.database;
 
 /**
- * Created by SG on 11.03.2016.
+ * Created by akor on 11.03.2016.
  */
 public class ThingDbSchema {
     public static final class ThingTable {

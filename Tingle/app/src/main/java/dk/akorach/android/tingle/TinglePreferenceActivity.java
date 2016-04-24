@@ -5,7 +5,7 @@ import android.preference.PreferenceActivity;
 import java.util.List;
 
 /**
- * Created by SG on 06.04.2016.
+ * Created by akor on 06.04.2016.
  */
 public class TinglePreferenceActivity extends PreferenceActivity {
 

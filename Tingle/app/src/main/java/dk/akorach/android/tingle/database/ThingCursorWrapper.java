@@ -9,7 +9,7 @@ import dk.akorach.android.tingle.Thing;
 import dk.akorach.android.tingle.database.ThingDbSchema.ThingTable;
 
 /**
- * Created by SG on 11.03.2016.
+ * Created by akor on 11.03.2016.
  */
 public class ThingCursorWrapper extends CursorWrapper {
     public ThingCursorWrapper(Cursor cursor) {

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Created by SG on 25.02.2016.
+ * Created by akor on 25.02.2016.
  */
 public class ListFragment extends Fragment {
 

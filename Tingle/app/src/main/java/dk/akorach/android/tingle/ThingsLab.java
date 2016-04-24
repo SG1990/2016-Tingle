@@ -19,7 +19,7 @@ import dk.akorach.android.tingle.database.ThingDbSchema;
 import dk.akorach.android.tingle.database.ThingDbSchema.ThingTable;
 
 /**
- * Created by SG on 11.02.2016.
+ * Created by akor on 11.02.2016.
  */
 public class ThingsLab {
     private static ThingsLab sThingsLab;
